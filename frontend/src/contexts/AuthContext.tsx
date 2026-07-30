@@ -16,8 +16,7 @@ const TOKEN_KEY = "linkflow_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  // Starts true: on first mount we don't yet know if a stored token is
-  // still valid, so routes should wait rather than flash the login page.
+  // Wait until any stored token has been validated.
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,9 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function register(payload: RegisterPayload) {
     await registerUser(payload);
-    // Registration doesn't return a token by design (backend keeps
-    // register/login as distinct concerns) - log in right after so the
-    // user doesn't have to re-type their credentials.
+   // Log in after registration to obtain a JWT.
     await login({ email: payload.email, password: payload.password });
   }
 

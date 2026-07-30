@@ -1,7 +1,4 @@
-// Shared types, deliberately mirroring the backend's Pydantic schemas
-// (schemas/user.py, schemas/url.py, schemas/dashboard.py) so the contract
-// between frontend and backend is easy to trace field-by-field.
-
+// Shared frontend types matching the backend schemas.
 export interface User {
   id: number;
   name: string;

@@ -27,8 +27,5 @@ def redirect_to_original(short_code: str, db: Session = Depends(get_db)):
 
     url_service.record_click(db, url)
 
-    # 307 preserves the original request method (harmless here since this is
-    # always a GET, but it's the more correct choice than a 301/302 for a
-    # redirect that isn't meant to be permanently cached by browsers - click
-    # counts would otherwise stop being recorded after the first visit.
+    # Use 307 so redirects continue to reach the server for click tracking.
     return RedirectResponse(url=url.original_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)

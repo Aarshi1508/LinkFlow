@@ -1,9 +1,5 @@
 """create users and urls tables
 
-Revision ID: 0001_initial
-Revises:
-Create Date: 2026-07-29
-
 """
 from typing import Sequence, Union
 
@@ -18,16 +14,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # Note: `id` columns are declared with primary_key=True only, no
-    # index=True. A PRIMARY KEY constraint already creates a unique index
-    # automatically in Postgres - adding index=True here would attach a
-    # second, redundant Index object to the Table, which op.create_table
-    # would then create *during* CREATE TABLE. A previous version of this
-    # migration also had an explicit op.create_index("ix_users_id", ...)
-    # call right after, which tried to create that same auto-generated
-    # index a second time and crashed with DuplicateTable. Fixed by
-    # removing index=True (no second index is needed) and removing the
-    # now-unnecessary explicit create_index calls for id.
+    # Primary keys are indexed automatically; avoid creating a duplicate index.
     op.create_table(
         "users",
         sa.Column("id", sa.Integer(), primary_key=True),

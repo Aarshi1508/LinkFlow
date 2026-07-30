@@ -17,9 +17,7 @@ from database.session import Base
 class URL(Base):
     __tablename__ = "urls"
 
-    # No explicit index=True here: a PRIMARY KEY already gets a unique
-    # index from Postgres automatically - see models/user.py for the same
-    # note and why this previously caused a duplicate-index migration bug.
+    # Primary keys are indexed automatically by PostgreSQL.
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 

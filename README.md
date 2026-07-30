@@ -1,12 +1,21 @@
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?logo=fastapi)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
 # LinkFlow
 
-A full-stack URL shortener built as a portfolio project to demonstrate clean,
-layered architecture on both the backend and frontend — JWT authentication,
-custom aliases, per-link analytics, and a dashboard, all containerized with
-Docker.
+A production-ready full-stack URL shortener built with **React**, **FastAPI**, and **PostgreSQL**. The application features JWT authentication, custom aliases, click analytics, and a responsive dashboard. It is fully containerized with Docker and deployed on **Vercel**, **Render**, and **Neon PostgreSQL**.
 
 **Stack:** React + TypeScript + Vite + Tailwind CSS (frontend) · FastAPI +
 SQLAlchemy + PostgreSQL + Alembic (backend) · Docker Compose
+
+## 🚀 Live Demo
+
+- **Frontend:** https://linkflow-opal.vercel.app
+- **Backend API:** https://linkflow-4dck.onrender.com
+- **API Docs:** https://linkflow-4dck.onrender.com/docs
 
 ---
 
@@ -23,7 +32,6 @@ SQLAlchemy + PostgreSQL + Alembic (backend) · Docker Compose
 - [Database Schema](#database-schema)
 - [Screenshots](#screenshots)
 - [Design Decisions](#design-decisions)
-- [Troubleshooting](#troubleshooting)
 - [Future Improvements](#future-improvements)
 
 ---
@@ -34,10 +42,10 @@ SQLAlchemy + PostgreSQL + Alembic (backend) · Docker Compose
 - Create shortened URLs with an optional custom alias
 - View, search, edit, and delete your own links
 - Public redirect endpoint (`/link/{shortCode}`) with click tracking
-- Dashboard: total links, total clicks, active links
+- Dashboard with aggregated statistics (total links, active links, total clicks)
 - Per-link analytics: total clicks, created date, last visited
 - Auto-generated Swagger/OpenAPI documentation
-- Fully containerized with Docker Compose (Postgres + backend + frontend)
+- - Containerized using Docker and Docker Compose
 
 ## Architecture
 
@@ -112,12 +120,26 @@ linkflow/
 
 ## Getting Started
 
+## Deployment
+
+| Component | Platform        |
+| --------- | --------------- |
+| Frontend  | Vercel          |
+| Backend   | Render          |
+| Database  | Neon PostgreSQL |
+
+The application is deployed as a distributed full-stack system:
+
+- React frontend hosted on Vercel
+- FastAPI backend hosted on Render
+- PostgreSQL database hosted on Neon
+
 ### Option A: Docker Compose (recommended)
 
 Requires Docker and Docker Compose.
 
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/Aarshi1508/LinkFlow>
 cd linkflow
 cp .env.example .env
 # edit .env and set a real JWT_SECRET_KEY before running in anything but local dev
@@ -126,12 +148,12 @@ docker compose up --build
 
 This starts three services:
 
-| Service  | URL                          |
-|----------|-------------------------------|
-| Frontend | http://localhost:5173         |
-| Backend  | http://localhost:8000         |
-| API docs | http://localhost:8000/docs    |
-| Postgres | localhost:5432                |
+| Service  | URL                        |
+| -------- | -------------------------- |
+| Frontend | http://localhost:5173      |
+| Backend  | http://localhost:8000      |
+| API docs | http://localhost:8000/docs |
+| Postgres | localhost:5432             |
 
 Migrations run automatically on backend startup — no manual step needed.
 
@@ -165,17 +187,17 @@ npm run dev
 
 **Root `.env`** (used by `docker-compose.yml`):
 
-| Variable                      | Description                                    |
-|--------------------------------|------------------------------------------------|
-| `POSTGRES_USER`                | Postgres username                              |
-| `POSTGRES_PASSWORD`            | Postgres password                              |
-| `POSTGRES_DB`                  | Postgres database name                         |
-| `JWT_SECRET_KEY`                | Secret used to sign JWTs - generate with `openssl rand -hex 32` |
-| `JWT_ALGORITHM`                 | JWT signing algorithm (default `HS256`)        |
-| `ACCESS_TOKEN_EXPIRE_MINUTES`   | JWT expiry in minutes                          |
-| `BASE_URL`                      | Public base URL of the backend                 |
-| `CORS_ORIGINS`                  | Comma-separated list of allowed frontend origins |
-| `VITE_API_URL`                  | Backend URL the frontend calls (browser-facing) |
+| Variable                      | Description                                                     |
+| ----------------------------- | --------------------------------------------------------------- |
+| `POSTGRES_USER`               | Postgres username                                               |
+| `POSTGRES_PASSWORD`           | Postgres password                                               |
+| `POSTGRES_DB`                 | Postgres database name                                          |
+| `JWT_SECRET_KEY`              | Secret used to sign JWTs - generate with `openssl rand -hex 32` |
+| `JWT_ALGORITHM`               | JWT signing algorithm (default `HS256`)                         |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | JWT expiry in minutes                                           |
+| `BASE_URL`                    | Public base URL of the backend                                  |
+| `CORS_ORIGINS`                | Comma-separated list of allowed frontend origins                |
+| `VITE_API_URL`                | Backend URL the frontend calls (browser-facing)                 |
 
 **`backend/.env`** and **`frontend/.env`** — see each folder's `.env.example`
 for the standalone (non-Docker) equivalents.
@@ -185,19 +207,19 @@ for the standalone (non-Docker) equivalents.
 Interactive Swagger docs are auto-generated by FastAPI at `/docs` (and
 ReDoc at `/redoc`) once the backend is running.
 
-| Method | Endpoint              | Auth required | Description                          |
-|--------|------------------------|:---:|----------------------------------------|
-| POST   | `/register`            | –   | Create a new user account              |
-| POST   | `/login`               | –   | Exchange credentials for a JWT         |
-| GET    | `/profile`             | ✅  | Get the current user's profile         |
-| POST   | `/shorten`             | ✅  | Create a shortened URL                 |
-| GET    | `/urls`                | ✅  | List the current user's URLs (`?search=`) |
-| GET    | `/urls/{id}`           | ✅  | Get one URL's details/analytics        |
-| PUT    | `/urls/{id}`           | ✅  | Update a URL's destination or alias    |
-| DELETE | `/urls/{id}`           | ✅  | Delete a URL                           |
-| GET    | `/dashboard/stats`     | ✅  | Aggregate stats: total/active links, total clicks |
-| GET    | `/link/{shortCode}`    | –   | Public redirect to the original URL (tracks clicks) |
-| GET    | `/health`              | –   | Liveness check                         |
+| Method | Endpoint            | Auth required | Description                                         |
+| ------ | ------------------- | :-----------: | --------------------------------------------------- |
+| POST   | `/register`         |       –       | Create a new user account                           |
+| POST   | `/login`            |       –       | Exchange credentials for a JWT                      |
+| GET    | `/profile`          |      ✅       | Get the current user's profile                      |
+| POST   | `/shorten`          |      ✅       | Create a shortened URL                              |
+| GET    | `/urls`             |      ✅       | List the current user's URLs (`?search=`)           |
+| GET    | `/urls/{id}`        |      ✅       | Get one URL's details/analytics                     |
+| PUT    | `/urls/{id}`        |      ✅       | Update a URL's destination or alias                 |
+| DELETE | `/urls/{id}`        |      ✅       | Delete a URL                                        |
+| GET    | `/dashboard/stats`  |      ✅       | Aggregate stats: total/active links, total clicks   |
+| GET    | `/link/{shortCode}` |       –       | Public redirect to the original URL (tracks clicks) |
+| GET    | `/health`           |       –       | Liveness check                                      |
 
 Authenticated requests require an `Authorization: Bearer <token>` header,
 obtained from `POST /login`.
@@ -206,25 +228,25 @@ obtained from `POST /login`.
 
 **users**
 
-| Column          | Type      | Notes                  |
-|------------------|-----------|-------------------------|
-| id               | integer   | primary key             |
-| name             | string    |                         |
-| email            | string    | unique, indexed         |
-| password_hash    | string    | bcrypt hash, never returned by the API |
-| created_at       | timestamp |                         |
+| Column        | Type      | Notes                                  |
+| ------------- | --------- | -------------------------------------- |
+| id            | integer   | primary key                            |
+| name          | string    |                                        |
+| email         | string    | unique, indexed                        |
+| password_hash | string    | bcrypt hash, never returned by the API |
+| created_at    | timestamp |                                        |
 
 **urls**
 
-| Column          | Type      | Notes                          |
-|------------------|-----------|----------------------------------|
-| id               | integer   | primary key                     |
-| user_id          | integer   | foreign key → users.id, `ON DELETE CASCADE` |
-| original_url     | string    |                                  |
-| short_code       | string    | unique, indexed                 |
-| total_clicks     | integer   | default 0                       |
-| last_visited     | timestamp | nullable                        |
-| created_at       | timestamp |                                  |
+| Column       | Type      | Notes                                       |
+| ------------ | --------- | ------------------------------------------- |
+| id           | integer   | primary key                                 |
+| user_id      | integer   | foreign key → users.id, `ON DELETE CASCADE` |
+| original_url | string    |                                             |
+| short_code   | string    | unique, indexed                             |
+| total_clicks | integer   | default 0                                   |
+| last_visited | timestamp | nullable                                    |
+| created_at   | timestamp |                                             |
 
 ## Testing
 
@@ -266,117 +288,25 @@ etc.) straightforward to write.
 
 ## Screenshots
 
-> _Add screenshots here once the app is running locally._
+### Login
 
-| Login | Dashboard |
-|---|---|
-| ![Login screen](./docs/screenshots/login.png) | ![Dashboard](./docs/screenshots/dashboard.png) |
+![Login](./docs/screenshots/login.png)
 
-| My Links | Link Analytics |
-|---|---|
-| ![My Links](./docs/screenshots/links.png) | ![Link Detail](./docs/screenshots/link-detail.png) |
+### Dashboard
+
+![Dashboard](./docs/screenshots/dashboard.png)
+
+### My Links
+
+![My Links](./docs/screenshots/my-links.png)
 
 ## Design Decisions
 
-A few choices worth calling out (useful context if you're walking through
-this project in an interview):
-
-- **Services never raise `HTTPException`** — they raise domain exceptions
-  (`NotFoundError`, `ConflictError`, etc.) from `core/exceptions.py`, which
-  routers translate into HTTP responses. This keeps business logic
-  framework-agnostic and independently testable.
-- **Ownership checks are centralized** in `url_service._get_owned_url_or_raise`,
-  so every read/update/delete on a URL goes through one function rather
-  than repeating an `if url.user_id != current_user.id` check per route.
-- **Short codes use `secrets.choice`**, not `random`, since they're
-  security-relevant (unguessable) identifiers.
-- **Redirects use HTTP 307**, not 301/302 — a 301 would get cached by the
-  browser and stop hitting the server (and therefore stop recording clicks)
-  after the first visit.
-- **JWTs are stored in `localStorage`** on the frontend for simplicity.
-  This is a known trade-off (vulnerable to XSS in a way an `httpOnly`
-  cookie isn't) that would be revisited for a production system handling
-  sensitive data.
-
-## Troubleshooting
-
-**Registration fails with `AttributeError: module 'bcrypt' has no attribute
-'__about__'`, or with `ValueError: password cannot be longer than 72
-bytes`.**
-
-Both were bugs in an earlier version of this project (now fixed) — worth
-documenting since they're common gotchas with this exact dependency
-combination, not unusual environment issues.
-
-*Cause 1 (the `AttributeError`):* password hashing originally went through
-`passlib`'s `CryptContext(schemes=["bcrypt"])`. `passlib` 1.7.4 (its last
-release, from 2020) detects the installed `bcrypt` version by reading
-`bcrypt.__about__.__version__`. Modern `bcrypt` (4.1+) removed that
-`__about__` submodule entirely, so `passlib` crashes on the very first
-hash/verify call. This isn't a transient bug that a future `passlib`
-release will fix — `passlib` is unmaintained, so pinning old versions of
-both packages together is fragile, not a real fix.
-
-*Cause 2 (the `ValueError`):* bcrypt only hashes the first 72 bytes of a
-password by design. Older bcrypt bindings silently truncated anything
-past that; current `bcrypt` raises instead of silently truncating (a
-safety improvement) - but nothing in the original code caught that error,
-so a password longer than 72 bytes (UTF-8 encoded) crashed the request
-with an unhandled 500 instead of a clean validation error.
-
-*Fix:* `core/security.py` now calls the `bcrypt` library directly
-(`bcrypt.hashpw`/`bcrypt.checkpw`) instead of going through `passlib` -
-this removes `passlib`'s broken version-detection code path entirely, so
-it works with any current `bcrypt` release. `passlib[bcrypt]` was removed
-from `requirements.txt` in favor of a pinned `bcrypt==4.2.0`. Separately,
-`schemas/user.py` now validates that a password is at most 72 bytes when
-UTF-8 encoded, on both `UserCreate` and `UserLogin` - an over-length
-password now fails with a `422` and a clear message
-("Password is too long: it must be at most 72 bytes...") instead of ever
-reaching bcrypt. The same check is repeated inside `core/security.py`
-itself as defense-in-depth, in case `hash_password`/`verify_password` is
-ever called from a code path that doesn't go through those schemas.
-
-**`sqlalchemy.exc.ProgrammingError: (psycopg2.errors.DuplicateTable) relation
-"ix_users_id" already exists` on first `docker compose up --build`.**
-
-This was a bug in an earlier version of
-`alembic/versions/0001_initial_create_users_and_urls.py` (now fixed) — worth
-documenting in case you're comparing against an older copy of this project
-or writing your own migrations by hand.
-
-*Cause:* the migration declared the `id` columns as
-`sa.Column("id", sa.Integer(), primary_key=True, index=True)` inside
-`op.create_table(...)`, mirroring the `index=True` that was (redundantly)
-present on the ORM models' primary key columns. In SQLAlchemy, `index=True`
-on a column isn't inert — it attaches an `Index` object to the `Table`
-under the default name `ix_<table>_<column>`, and that index is created
-*as part of* `CREATE TABLE`. The migration then also called
-`op.create_index("ix_users_id", "users", ["id"])` immediately afterward,
-attempting to create that same auto-generated index a second time —
-Postgres rejected the duplicate with `DuplicateTable` (Postgres represents
-indexes as relations).
-
-*Why it's confusing:* a `PRIMARY KEY` constraint already creates a unique
-index automatically in Postgres, so `index=True` on a primary-key column
-was never adding anything useful — it was silently redundant right up
-until it collided with the explicit `create_index` call for the same name.
-
-*Fix:* removed `index=True` from the `id` columns in both the models
-(`models/user.py`, `models/url.py`) and the migration, and removed the
-now-unnecessary explicit `create_index`/`drop_index` calls for `ix_users_id`
-and `ix_urls_id`. The `email` and `short_code` unique indexes are unaffected
-— those were never duplicated, since the models don't set `index=True` on
-any column that the migration *also* explicitly indexes anywhere else.
-Models and migration are now in sync, so running
-`alembic revision --autogenerate` against the current schema produces no
-diff.
-
-If you hit a similar error after modifying the schema yourself: check
-whether a column has `index=True` (or `unique=True`, which behaves the
-same way) set in *both* the ORM model **and** an explicit
-`op.create_index()`/`op.create_unique_constraint()` in the migration —
-that combination is the pattern to avoid.
+- **Layered Architecture:** Business logic is isolated in service classes, while routers handle only HTTP requests and responses.
+- **Framework-Agnostic Services:** Services raise domain-specific exceptions instead of HTTP exceptions, keeping business logic independent and easier to test.
+- **Centralized Authorization:** URL ownership checks are handled in one place to avoid duplicated authorization logic.
+- **Secure Short Codes:** Short codes are generated using Python's `secrets` module for better unpredictability.
+- **Documented API:** FastAPI automatically generates interactive Swagger/OpenAPI documentation.
 
 ## Future Improvements
 

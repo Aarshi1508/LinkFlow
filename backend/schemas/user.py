@@ -1,24 +1,12 @@
 """
 Pydantic schemas for the User resource.
-
-Kept separate from models/user.py on purpose: these define the API contract
-(what clients send/receive), while the SQLAlchemy model defines the DB
-table. UserResponse deliberately excludes password_hash - it should never
-leave the server.
 """
 
 from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-# bcrypt (see core/security.py) can only hash the first 72 bytes of a
-# password - anything beyond that is either silently ignored or (in
-# current bcrypt releases) raises an error. Rejecting an over-length
-# password here, at the API boundary, means the request fails with a
-# clear 422 instead of a 500 from deep inside the hashing/verification
-# call. Checked as UTF-8 byte length, not character count, since a
-# handful of multi-byte characters (emoji, many non-Latin scripts) can
-# exceed 72 bytes well before the string "looks" long.
+## Enforce bcrypt's 72-byte password limit before hashing.
 _BCRYPT_MAX_PASSWORD_BYTES = 72
 
 
@@ -45,9 +33,7 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-    # Same check as UserCreate: without this, a login attempt with a very
-    # long password would reach bcrypt's verify call directly and crash
-    # with a 500 instead of failing cleanly.
+     # Apply the same validation during login.
     _validate_password_length = field_validator("password")(_validate_bcrypt_length)
 
 
